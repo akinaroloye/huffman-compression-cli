@@ -1,10 +1,10 @@
 # Huffman Compression CLI
 
-A command-line file compression and decompression tool implemented from scratch in Python using Huffman coding. The tool reads a text file, builds a frequency table, constructs a Huffman tree via a min-heap, encodes the content to a bit string, packs it into bytes, and writes the result as a binary file with an embedded JSON codebook. Decompression reverses the process without any external dependencies.
+A command-line file compression tool built from scratch in Python using Huffman coding. No external dependencies. It builds a frequency table, constructs a Huffman tree via a min-heap, packs the encoded output into bytes, and writes a binary file with the codebook embedded as JSON so no separate dictionary is needed for decompression.
 
 ## Tech stack
 
-- Python 3 (standard library only — `heapq`, `json`, `argparse`, `collections.Counter`)
+- Python 3 (standard library only: `heapq`, `json`, `argparse`, `collections.Counter`)
 
 ## Usage
 
@@ -33,8 +33,8 @@ The `.huff` binary format is:
 [ remaining bytes: padded bit-packed data       ]
 ```
 
-The first byte of the bit data encodes how many padding bits were added to reach a multiple of 8, allowing exact reconstruction.
+The first byte of the bit data encodes how many padding bits were added to reach a multiple of 8, so decompression knows exactly where the real data ends.
 
 ## What I learned
 
-Implementing Huffman coding end-to-end — rather than using a library — meant dealing with the details that are usually abstracted away: managing the min-heap ordering for nodes with equal frequency, handling the edge case of single-character files, and designing a self-contained binary format that embeds the codebook so no separate file is needed for decompression. Getting the bit padding and unpacking logic right (particularly the boundary between the padding-length byte and the actual data) required careful off-by-one thinking.
+Implementing this end-to-end rather than using a library meant dealing with the parts that are usually hidden: min-heap ordering when multiple nodes share the same frequency, handling single-character input files, and designing the binary format to be self-contained. The bit padding logic had some tricky boundary cases, particularly tracking the padding-length byte separately so decompression doesn't misread the last few bits.
